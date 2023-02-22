@@ -10,6 +10,9 @@ from models.embedding.positional_encoding import PostionalEncoding
 from models.embedding.token_embeddings import TokenEmbedding
 from models.embedding.autoencoder import AutoEncoder
 
+from conf import device
+
+
 class SummationEmbedding(nn.Module):
     def __init__(self, token_emb, positional_emb, cat_token_emb, cat_positional_emb):
         super(SummationEmbedding, self).__init__()
@@ -18,8 +21,7 @@ class SummationEmbedding(nn.Module):
         self.positional_emb = positional_emb
         self.cat_token_emb = cat_token_emb
         self.cat_positional_emb = cat_positional_emb
-        
-        self.auto_encoder = AutoEncoder(self.token_emb) 
+         
 
     def summation(self):
         embedding = self.token_emb + self.positional_emb       
@@ -31,7 +33,17 @@ class SummationEmbedding(nn.Module):
 
     def autoencoder(self):
         embedding = torch.cat([self.token_emb, self.positional_emb], 2)
+        # print('###')
+        # print(embedding.shape)
+        batch_size, sentence_size, embedding_size = embedding.shape
+        embedding = embedding.view(batch_size*sentence_size, -1)
+        # print(embedding.shape)
+        self.auto_encoder = AutoEncoder(embedding).to(device)
         embedding = self.auto_encoder(embedding)
+        # print('$$$$$$$$$4')
+        # print(embedding.shape)
+        embedding = embedding.view(batch_size, sentence_size, int(embedding_size/2))
+        # print(embedding.shape)
         return embedding
 
 
@@ -101,7 +113,8 @@ class TransformerEmbedding(nn.Module):
         model = SummationEmbedding(tok_emb, pos_emb, cat_tok_emb, cat_pos_emb)
         # final_emb = model.summation()
         # final_emb = model.concatenate()
-        final_emb = model.summation()
+        final_emb = model.autoencoder()
+
 
         # print('+++++++++++')
         # print(final_emb.shape)
