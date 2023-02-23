@@ -40,7 +40,7 @@ class SummationEmbedding(nn.Module):
         # print(embedding.shape)
         self.auto_encoder = AutoEncoder(embedding).to(device)
         embedding = self.auto_encoder(embedding)
-        # print('$$$$$$$$$4')
+
         # print(embedding.shape)
         embedding = embedding.view(batch_size, sentence_size, int(embedding_size/2))
         # print(embedding.shape)
