@@ -9,13 +9,16 @@ print(x)
 # x = x.view(3, -1)
 # print(x.shape)
 # print(x)
-x = x.view(3*2, -1)
-print(x.shape)
-print(x)
+a = x.view(3*2, -1)
+print(a.shape)
+print(a)
 
-x = x.view(3, 2, 5)
-print(x.shape)
-print(x)
+b = a.view(3, 2, 5)
+print(b.shape)
+print(b)
+
+# 텐서를 비교하는 함수
+print(torch.eq(x, b))
 
 # # reshape the tensor into a 2D tensor with shape (batch_size, channels * height * width)
 # x = x.view(32, -1)

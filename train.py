@@ -37,8 +37,10 @@ model = Transformer(src_pad_idx=src_pad_idx,
                     n_layers=n_layers,
                     drop_prob=drop_prob,
                     device=device).to(device)
-print('===============')
-print(model)
+
+# print('===============')
+# print(model)
+
 print(f'The model has {count_parameters(model):,} trainable parameters')
 model.apply(initialize_weights)
 optimizer = Adam(params=model.parameters(),

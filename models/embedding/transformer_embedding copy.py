@@ -8,7 +8,7 @@ from torch import nn
 
 from models.embedding.positional_encoding import PostionalEncoding
 from models.embedding.token_embeddings import TokenEmbedding
-from models.embedding.autoencoder import AutoEncoder, LinearLayer
+from models.embedding.autoencoder import AutoEncoder
 
 from conf import device
 
@@ -30,25 +30,21 @@ class SummationEmbedding(nn.Module):
         embedding = torch.cat([self.cat_token_emb, self.cat_positional_emb], 2)
         return embedding
 
-    def linear(self):
-        embedding = torch.cat([self.token_emb, self.positional_emb], 2)
-        batch_size, sentence_size, embedding_size = embedding.shape
-        embedding = embedding.view(batch_size*sentence_size, -1)
-        self.linearlayer = LinearLayer(embedding).to(device)
-        embedding = self.linearlayer(embedding)
-        embedding = embedding.view(batch_size, sentence_size, embedding_size)
-        return embedding
-
     def autoencoder(self):
         embedding = torch.cat([self.token_emb, self.positional_emb], 2)
         batch_size, sentence_size, embedding_size = embedding.shape
         embedding = embedding.view(batch_size*sentence_size, -1)
+        # print(embedding.shape)
+        # print('####before####')
+        # print(embedding)
         self.auto_encoder = AutoEncoder(embedding).to(device)
-        encoded, decoded = self.auto_encoder(embedding)
-        embedding = embedding.view(batch_size, sentence_size, embedding_size)
+        embedding = self.auto_encoder(embedding)
+        # print('####after####')
+        # print(embedding)
 
-        # 텐서를 비교하는 함수
-        # print(torch.eq(a, embedding))
+        # print(embedding.shape)
+        embedding = embedding.view(batch_size, sentence_size, int(embedding_size/2))
+        # print(embedding.shape)
         return embedding
 
 
@@ -57,6 +53,7 @@ class TransformerEmbedding(nn.Module):
     token embedding + positional encoding (sinusoid)
     positional encoding can give positional information to network
     """
+
     def __init__(self, vocab_size, d_model, max_len, drop_prob, device):
         """
         class for word embedding that included positional information
@@ -76,7 +73,7 @@ class TransformerEmbedding(nn.Module):
 
         self.drop_out = nn.Dropout(p=drop_prob)
 
-    def expander(self, x):
+    def expand(self, x):
         # normal
         tok_emb = self.tok_emb(x)
         pos_emb = self.pos_emb(x)
@@ -94,7 +91,16 @@ class TransformerEmbedding(nn.Module):
 
 ##########################auto encoder를 집어넣자##############################
     def forward(self, x):
-        tok_emb, pos_emb, cat_tok_emb, cat_pos_emb = self.expander(x)
+        # print('---------------')
+        # print(x.shape)
+        # print(x)
+
+        tok_emb, pos_emb, cat_tok_emb, cat_pos_emb = self.expand(x)
+        
+        # print('===============')
+        # print(tok_emb.shape)
+        # print(pos_emb.shape)
+        # print((tok_emb + pos_emb).shape)
 
         # tok_emb: 여러 문장에 대한 "토큰 임베딩"
         # torch.Size([128, 34, 512])
@@ -102,10 +108,17 @@ class TransformerEmbedding(nn.Module):
         # torch.Size([34, 512])
         # torch.Size([128, 34, 512])
 
+
         model = SummationEmbedding(tok_emb, pos_emb, cat_tok_emb, cat_pos_emb)
-        final_emb = model.summation()
+        # final_emb = model.summation()
         # final_emb = model.concatenate()
-        # final_emb = model.autoencoder()
+        final_emb = model.autoencoder()
+
+
+        # print('+++++++++++')
+        # print(final_emb.shape)
+        # print(final_emb)
+        # print(d)
 
         # return self.drop_out(tok_emb + pos_emb)
         return self.drop_out(final_emb)
