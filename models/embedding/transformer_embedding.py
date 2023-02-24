@@ -80,6 +80,11 @@ class TransformerEmbedding(nn.Module):
         # normal
         tok_emb = self.tok_emb(x)
         pos_emb = self.pos_emb(x)
+        print('##########Emb#########')
+        print(tok_emb.shape)
+        print(tok_emb)
+        print(pos_emb.shape)
+        print(pos_emb)
         tok_batch_size, tok_sentence_size, tok_embedding_size = tok_emb.shape
         pos_sentence_size, pos_embedding_size = pos_emb.shape
         pos_emb = pos_emb.expand(tok_batch_size, pos_sentence_size, pos_embedding_size)
@@ -94,7 +99,13 @@ class TransformerEmbedding(nn.Module):
 
 ##########################auto encoder를 집어넣자##############################
     def forward(self, x):
+
         tok_emb, pos_emb, cat_tok_emb, cat_pos_emb = self.expander(x)
+        print('########transformer_emb#######')
+        print(tok_emb.shape)
+        print(tok_emb)
+        print(pos_emb.shape)
+        print(pos_emb)
 
         # tok_emb: 여러 문장에 대한 "토큰 임베딩"
         # torch.Size([128, 34, 512])

@@ -45,6 +45,10 @@ class Transformer(nn.Module):
         trg_mask = self.make_pad_mask(trg, trg, self.trg_pad_idx, self.trg_pad_idx) * \
                    self.make_no_peak_mask(trg, trg)
 
+        print('########src#######')
+        print(src.shape)
+        print(src)
+
         enc_src = self.encoder(src, src_mask)
         output = self.decoder(trg, enc_src, trg_mask, src_trg_mask)
         return output

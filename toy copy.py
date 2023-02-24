@@ -14,7 +14,7 @@ c = a + b
 print(c.shape)
 print(c)
 
-b = b.expand(3, 2, 5)
+b = b.expand(7, 2, 5)
 print(b.shape)
 print(b)
 
