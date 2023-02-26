@@ -11,13 +11,14 @@ from models.embedding.transformer_embedding import TransformerEmbedding
 
 class Encoder(nn.Module):
 
-    def __init__(self, enc_voc_size, max_len, d_model, ffn_hidden, n_head, n_layers, drop_prob, device):
+    def __init__(self, enc_voc_size, max_len, d_model, ffn_hidden, n_head, n_layers, drop_prob, device, k):
         super().__init__()
         self.emb = TransformerEmbedding(d_model=d_model,
                                         max_len=max_len,
                                         vocab_size=enc_voc_size,
                                         drop_prob=drop_prob,
-                                        device=device)
+                                        device=device,
+                                        k=k)
 
         self.layers = nn.ModuleList([EncoderLayer(d_model=d_model,
                                                   ffn_hidden=ffn_hidden,
@@ -26,10 +27,8 @@ class Encoder(nn.Module):
                                      for _ in range(n_layers)])
 
     def forward(self, x, s_mask):
-        print('@@@@@@@@@@')
-        print(x.shape)
         x = self.emb(x)
-        print(x.shape)
+        # print(c)
 
         for layer in self.layers:
             x = layer(x, s_mask)

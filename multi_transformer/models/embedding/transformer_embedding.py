@@ -29,8 +29,8 @@ class SummationEmbedding(nn.Module):
 
     def concatenate(self):
         embedding = torch.cat([self.cat_token_emb, self.cat_positional_emb], 2)
-        print('#####CAT#####')
-        print(embedding.shape)
+        # print('#####CAT#####')
+        # print(embedding.shape)
         return embedding
 
     def linear(self):
@@ -61,7 +61,7 @@ class TransformerEmbedding(nn.Module):
     token embedding + positional encoding (sinusoid)
     positional encoding can give positional information to network
     """
-    def __init__(self, vocab_size, d_model, max_len, drop_prob, device):
+    def __init__(self, vocab_size, d_model, max_len, drop_prob, device, k):
         """
         class for word embedding that included positional information
 
@@ -69,7 +69,9 @@ class TransformerEmbedding(nn.Module):
         :param d_model: dimensions of model
         """
         # "Concatenate" Token, Position 임베딩 크기 조절 파라미터
-        k = 12
+        # k = 12
+        print('#####KKKKKKKKK#####')
+        print(k)
 
         super(TransformerEmbedding, self).__init__()
         self.tok_emb = TokenEmbedding(vocab_size, d_model)
@@ -98,13 +100,13 @@ class TransformerEmbedding(nn.Module):
         # concatenate
         cat_tok_emb = self.cat_tok_emb(x)
         cat_pos_emb = self.cat_pos_emb(x)
-        print('##########Emb#########')
-        print(x.shape)
-        print(x)
-        print(cat_tok_emb.shape)
-        print(tok_emb)
-        print(cat_pos_emb.shape)
-        print(pos_emb)
+        # print('##########Emb#########')
+        # print(x.shape)
+        # print(x)
+        # print(cat_tok_emb.shape)
+        # print(tok_emb)
+        # print(cat_pos_emb.shape)
+        # print(pos_emb)
         tok_batch_size, tok_sentence_size, tok_embedding_size = cat_tok_emb.shape
         pos_sentence_size, pos_embedding_size = cat_pos_emb.shape
         cat_pos_emb = cat_pos_emb.expand(tok_batch_size, pos_sentence_size, pos_embedding_size)

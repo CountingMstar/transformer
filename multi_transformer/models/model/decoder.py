@@ -11,13 +11,14 @@ from models.embedding.transformer_embedding import TransformerEmbedding
 
 
 class Decoder(nn.Module):
-    def __init__(self, dec_voc_size, max_len, d_model, ffn_hidden, n_head, n_layers, drop_prob, device):
+    def __init__(self, dec_voc_size, max_len, d_model, ffn_hidden, n_head, n_layers, drop_prob, device, k):
         super().__init__()
         self.emb = TransformerEmbedding(d_model=d_model,
                                         drop_prob=drop_prob,
                                         max_len=max_len,
                                         vocab_size=dec_voc_size,
-                                        device=device)
+                                        device=device,
+                                        k=k)
         
         self.layers = nn.ModuleList([DecoderLayer(d_model=d_model,
                                                   ffn_hidden=ffn_hidden,
