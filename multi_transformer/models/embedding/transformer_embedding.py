@@ -21,7 +21,7 @@ class SummationEmbedding(nn.Module):
         self.positional_emb = positional_emb
         self.cat_token_emb = cat_token_emb
         self.cat_positional_emb = cat_positional_emb
-        self.layer = nn.Linear(1024, 512)
+        self.linearlayer = LinearLayer().to(device)
 
     def summation(self):
         embedding = self.token_emb + self.positional_emb       
@@ -33,13 +33,25 @@ class SummationEmbedding(nn.Module):
         # print(embedding.shape)
         return embedding
 
+    # def linear(self):
+    #     embedding = torch.cat([self.token_emb, self.positional_emb], 2)
+    #     batch_size, sentence_size, embedding_size = embedding.shape
+    #     embedding = embedding.view(batch_size*sentence_size, -1)
+    #     self.linearlayer = LinearLayer(embedding).to(device)
+    #     embedding = self.linearlayer(embedding)
+    #     embedding = embedding.view(batch_size, sentence_size, int(embedding_size/2))
+    #     return embedding
+
     def linear(self):
-        embedding = torch.cat([self.token_emb, self.positional_emb], 2)
+        embedding = torch.cat([self.cat_token_emb, self.cat_positional_emb], 2)
         batch_size, sentence_size, embedding_size = embedding.shape
         embedding = embedding.view(batch_size*sentence_size, -1)
+        # print('#########')
+        # print(embedding.shape)
+
         # self.linearlayer = LinearLayer(embedding).to(device)
-        # embedding = self.linearlayer(embedding)
-        # embedding = embedding.view(batch_size, sentence_size, int(embedding_size/2))
+        embedding = self.linearlayer(embedding)
+
         embedding = embedding.view(batch_size, sentence_size, embedding_size)
         return embedding
 
@@ -133,8 +145,8 @@ class TransformerEmbedding(nn.Module):
         positional encoding type 결정
         """
         # final_emb = model.summation()
-        final_emb = model.concatenate()
-        # final_emb = model.linear()
+        # final_emb = model.concatenate()
+        final_emb = model.linear()
         # final_emb = model.autoencoder()
         
 

@@ -149,18 +149,18 @@ for k in k_list:
             # if step % 100 == 0:
             #     torch.save(model.state_dict(), 'saved/model-{0}.pt'.format(step))
             k_str = str(k)
-            if step >= 0:
+            if step >= 999:
                 torch.save(model.state_dict(), 'saved/model-'+ k_str +'-{0}.pt'.format(step))
 
-            f = open('result/train_loss'+ k_str +'.txt', 'w')
+            f = open('result/train_loss-'+ k_str +'.txt', 'w')
             f.write(str(train_losses))
             f.close()
 
-            f = open('result/bleu.'+ k_str +'txt', 'w')
+            f = open('result/bleu-'+ k_str +'.txt', 'w')
             f.write(str(bleus))
             f.close()
 
-            f = open('result/test_loss.'+ k_str +'txt', 'w')
+            f = open('result/test_loss-'+ k_str +'.txt', 'w')
             f.write(str(test_losses))
             f.close()
 

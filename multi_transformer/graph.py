@@ -19,16 +19,18 @@ def read(name):
 
 
 def draw(mode):
+    k = 50
+    k_str = str(k)
     if mode == 'loss':
-        train = read('result/train_loss.txt')
-        test = read('result/test_loss.txt')
+        train = read('result/train_loss-'+ k_str +'.txt')
+        test = read('result/test_loss-'+ k_str +'.txt')
         plt.plot(train, 'r', label='train')
         plt.plot(test, 'b', label='validation')
         plt.legend(loc='lower left')
 
 
     elif mode == 'bleu':
-        bleu = read('result/bleu.txt')
+        bleu = read('result/bleu-'+ k_str +'.txt')
         plt.plot(bleu, 'b', label='bleu score')
         plt.legend(loc='lower right')
 

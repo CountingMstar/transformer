@@ -3,12 +3,11 @@ from torch import nn
 
 
 class LinearLayer(nn.Module):
-    def __init__(self, embedding, dropout=0.1):
+    def __init__(self, dropout=0.1):
         super(LinearLayer, self).__init__()
 
-        x_embedding, y_embedding = embedding.shape
-        self.w_1 = nn.Linear(y_embedding, 512)
-        self.w_2 = nn.Linear(512, int(y_embedding/2))
+        self.w_1 = nn.Linear(512, 512)
+        self.w_2 = nn.Linear(512, 512)
         self.dropout = nn.Dropout(p=dropout)
 
     def forward(self, x):
@@ -16,6 +15,21 @@ class LinearLayer(nn.Module):
         x = self.w_2(x)
         x = self.dropout(x)
         return x
+
+# class LinearLayer(nn.Module):
+#     def __init__(self, embedding, dropout=0.1):
+#         super(LinearLayer, self).__init__()
+
+#         x_embedding, y_embedding = embedding.shape
+#         self.w_1 = nn.Linear(y_embedding, 512)
+#         self.w_2 = nn.Linear(512, int(y_embedding/2))
+#         self.dropout = nn.Dropout(p=dropout)
+
+#     def forward(self, x):
+#         x = self.w_1(x)
+#         x = self.w_2(x)
+#         x = self.dropout(x)
+#         return x
 
 # 오토인코더 모듈 정의
 class AutoEncoder(nn.Module):
