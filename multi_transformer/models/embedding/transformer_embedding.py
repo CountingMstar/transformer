@@ -21,6 +21,11 @@ class SummationEmbedding(nn.Module):
         self.positional_emb = positional_emb
         self.cat_token_emb = cat_token_emb
         self.cat_positional_emb = cat_positional_emb
+
+        """
+        from models.embedding.autoencoder import LinearLayer의
+        linear layer 선언
+        """
         self.linearlayer = LinearLayer().to(device)
 
     def summation(self):
@@ -43,6 +48,9 @@ class SummationEmbedding(nn.Module):
     #     return embedding
 
     def linear(self):
+        """
+        token embedding과 positional embedding을 결합하는 linear layer
+        """
         embedding = torch.cat([self.cat_token_emb, self.cat_positional_emb], 2)
         batch_size, sentence_size, embedding_size = embedding.shape
         embedding = embedding.view(batch_size*sentence_size, -1)
