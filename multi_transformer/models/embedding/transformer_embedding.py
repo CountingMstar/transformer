@@ -129,6 +129,9 @@ class TransformerEmbedding(nn.Module):
         # torch.Size([128, 34, 512])
 
         model = SummationEmbedding(tok_emb, pos_emb, cat_tok_emb, cat_pos_emb)
+        """
+        positional encoding type 결정
+        """
         # final_emb = model.summation()
         final_emb = model.concatenate()
         # final_emb = model.linear()
