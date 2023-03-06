@@ -29,8 +29,8 @@ class SummationEmbedding(nn.Module):
 
     def concatenate(self):
         embedding = torch.cat([self.cat_token_emb, self.cat_positional_emb], 2)
-        print('#####CAT#####')
-        print(embedding.shape)
+        # print('#####CAT#####')
+        # print(embedding.shape)
         return embedding
 
     def linear(self):
@@ -98,13 +98,13 @@ class TransformerEmbedding(nn.Module):
         # concatenate
         cat_tok_emb = self.cat_tok_emb(x)
         cat_pos_emb = self.cat_pos_emb(x)
-        print('##########Emb#########')
-        print(x.shape)
-        print(x)
-        print(cat_tok_emb.shape)
-        print(tok_emb)
-        print(cat_pos_emb.shape)
-        print(pos_emb)
+        # print('##########Emb#########')
+        # print(x.shape)
+        # print(x)
+        # print(cat_tok_emb.shape)
+        # print(tok_emb)
+        # print(cat_pos_emb.shape)
+        # print(pos_emb)
         tok_batch_size, tok_sentence_size, tok_embedding_size = cat_tok_emb.shape
         pos_sentence_size, pos_embedding_size = cat_pos_emb.shape
         cat_pos_emb = cat_pos_emb.expand(tok_batch_size, pos_sentence_size, pos_embedding_size)
