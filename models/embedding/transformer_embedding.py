@@ -21,10 +21,9 @@ class SummationEmbedding(nn.Module):
         self.positional_emb = positional_emb
         self.cat_token_emb = cat_token_emb
         self.cat_positional_emb = cat_positional_emb
-         
 
     def summation(self):
-        embedding = self.token_emb + self.positional_emb       
+        embedding = self.token_emb + self.positional_emb
         return embedding
 
     def concatenate(self):
@@ -36,17 +35,15 @@ class SummationEmbedding(nn.Module):
         # print('###')
         # print(embedding.shape)
         batch_size, sentence_size, embedding_size = embedding.shape
-        embedding = embedding.view(batch_size*sentence_size, -1)
+        embedding = embedding.view(batch_size * sentence_size, -1)
         # print(embedding.shape)
         self.auto_encoder = AutoEncoder(embedding).to(device)
         embedding = self.auto_encoder(embedding)
 
         # print(embedding.shape)
-        embedding = embedding.view(batch_size, sentence_size, int(embedding_size/2))
+        embedding = embedding.view(batch_size, sentence_size, int(embedding_size / 2))
         # print(embedding.shape)
         return embedding
-
-
 
 
 class TransformerEmbedding(nn.Module):
@@ -69,7 +66,7 @@ class TransformerEmbedding(nn.Module):
         self.tok_emb = TokenEmbedding(vocab_size, d_model)
         self.pos_emb = PostionalEncoding(d_model, max_len, device)
 
-        self.cat_tok_emb = TokenEmbedding(vocab_size, d_model-k)
+        self.cat_tok_emb = TokenEmbedding(vocab_size, d_model - k)
         self.cat_pos_emb = PostionalEncoding(k, max_len, device)
 
         self.drop_out = nn.Dropout(p=drop_prob)
@@ -87,17 +84,19 @@ class TransformerEmbedding(nn.Module):
         cat_pos_emb = self.cat_pos_emb(x)
         tok_batch_size, tok_sentence_size, tok_embedding_size = cat_tok_emb.shape
         pos_sentence_size, pos_embedding_size = cat_pos_emb.shape
-        cat_pos_emb = cat_pos_emb.expand(tok_batch_size, pos_sentence_size, pos_embedding_size)
+        cat_pos_emb = cat_pos_emb.expand(
+            tok_batch_size, pos_sentence_size, pos_embedding_size
+        )
         return tok_emb, pos_emb, cat_tok_emb, cat_pos_emb
 
-##########################auto encoder를 집어넣자##############################
+    ##########################auto encoder를 집어넣자##############################
     def forward(self, x):
         # print('---------------')
         # print(x.shape)
         # print(x)
 
         tok_emb, pos_emb, cat_tok_emb, cat_pos_emb = self.expand(x)
-        
+
         # print('===============')
         # print(tok_emb.shape)
         # print(pos_emb.shape)
@@ -109,12 +108,10 @@ class TransformerEmbedding(nn.Module):
         # torch.Size([34, 512])
         # torch.Size([128, 34, 512])
 
-
         model = SummationEmbedding(tok_emb, pos_emb, cat_tok_emb, cat_pos_emb)
         # final_emb = model.summation()
         # final_emb = model.concatenate()
         final_emb = model.autoencoder()
-
 
         # print('+++++++++++')
         # print(final_emb.shape)
@@ -123,6 +120,3 @@ class TransformerEmbedding(nn.Module):
 
         # return self.drop_out(tok_emb + pos_emb)
         return self.drop_out(final_emb)
-
-
-

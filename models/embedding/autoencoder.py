@@ -9,8 +9,8 @@ class AutoEncoder(nn.Module):
         x_embedding, y_embedding = embedding.shape
         # print('###################')
         # print(embedding.shape)
-        self.w_1 = nn.Linear(y_embedding, 64)
-        self.w_2 = nn.Linear(64, int(y_embedding/2))
+        self.w_1 = nn.Linear(y_embedding, 512)
+        self.w_2 = nn.Linear(512, int(y_embedding / 2))
         self.dropout = nn.Dropout(p=dropout)
 
     def forward(self, x):
@@ -21,6 +21,7 @@ class AutoEncoder(nn.Module):
         x = self.w_2(x)
         x = self.dropout(x)
         return x
+
 
 # # 오토인코더 모듈 정의
 # class Autoencoder(nn.Module):

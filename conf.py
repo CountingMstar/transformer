@@ -18,15 +18,15 @@ ffn_hidden = 2048
 drop_prob = 0.1
 
 # optimizer parameter setting
-init_lr = 1e-5
+init_lr = 1e-8
 factor = 0.9
 adam_eps = 5e-9
 patience = 10
 warmup = 100
-epoch = 1000
+epoch = 10000
 clip = 1.0
 weight_decay = 5e-4
-inf = float('inf')
+inf = float("inf")
 
 
 # # model parameter setting
